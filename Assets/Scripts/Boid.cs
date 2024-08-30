@@ -1,18 +1,101 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] Config config;
+    public List<Boid> neighbors;
+
+    public Vector3 position;
+    public Vector3 velocity;
+    public Vector3 acceleration; // accessed in parallelization
+
+    private Vector3 wanderTarget;
+
+    // https://www.c-sharpcorner.com/UploadFile/pranayamr/random-number-in-multithreading/
+    private static readonly ThreadLocal<System.Random> random = new ThreadLocal<System.Random>(() => new System.Random());
+    // what the fuck lmao
+
+    private void Start()
     {
-        
+        // on object instantiate
+        velocity = Vector3.zero;
+        acceleration = Vector3.zero;
+        position = transform.position;
+
+        wanderTarget = Vector3.zero;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        // update velocity based on acceleration
+        velocity += acceleration * Time.fixedDeltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, config.maxVelocity);
+
+        // update position based on velocity
+        position += velocity * Time.fixedDeltaTime;
+        transform.position = position;
+
+        // update rotation to face velocity
+        if (velocity.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(velocity);
+            transform.rotation = targetRotation; // apply slerp?
+        }
+    }
+
+    public void Combine()
+    {
+        Vector3 result = Vector3.zero;
+
+        if (config.wanderEnabled)
+            result += Wander() * config.wanderWeight;
+        result += AvoidBounds() * config.boundsWeight;
+
+        acceleration = result.normalized;
+        //acceleration = Vector3.ClampMagnitude(result.normalized, config.maxAcceleration);
+    }
+
+    /*
+    vector calculation functions
+    */
+
+
+
+    public Vector3 Wander()
+    {
+        float x, y, z;
+        lock (random)
+        {
+            x = (float)(random.Value.NextDouble() * 2.0 - 1.0);
+            y = (float)(random.Value.NextDouble() * 2.0 - 1.0);
+            z = (float)(random.Value.NextDouble() * 2.0 - 1.0);
+        }
+
+        wanderTarget += new Vector3(x, y, z);
+        wanderTarget = Vector3.ClampMagnitude(wanderTarget, config.wanderRadius);
+
+        return wanderTarget.normalized;
+    }
+
+    public Vector3 AvoidBounds()
+    {
+        float edgeDistance = config.boundarySize * 0.3f;
+
+        float xForce = position.x < -edgeDistance ? 1 : position.x > edgeDistance ? -1 : 0;
+        float yForce = position.y < -edgeDistance ? 1 : position.y > edgeDistance ? -1 : 0;
+        float zForce = position.z < -edgeDistance ? 1 : position.z > edgeDistance ? -1 : 0;
+
+        float proximity = Mathf.Min(
+            Mathf.Abs(edgeDistance - Mathf.Abs(position.x)),
+            Mathf.Abs(edgeDistance - Mathf.Abs(position.y)),
+            Mathf.Abs(edgeDistance - Mathf.Abs(position.z))
+        );
+
+        float proximityMultiplier = Mathf.Clamp01(1.0f - proximity / edgeDistance);
+        float forceMultiplier = proximityMultiplier * 100f;
+
+        return new Vector3(xForce * forceMultiplier, yForce * forceMultiplier, zForce * forceMultiplier);
     }
 }

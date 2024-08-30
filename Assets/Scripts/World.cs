@@ -7,7 +7,7 @@ public class World : MonoBehaviour
 
     private void OnRenderObject()
     {
-        // boundary rendering here
+        // do boundary rendering here  
         float halfSize = config.boundarySize / 2;
         lineMaterial.SetPass(0);
         

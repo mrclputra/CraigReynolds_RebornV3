@@ -87,12 +87,12 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(boid.transform.position + (boid.velocity / 2));
 
             // draw neighbor connections
-            GL.Color(Color.red);
-            foreach(Boid neighbor in boid.neighbors)
-            {
-                GL.Vertex(boid.position);
-                GL.Vertex(neighbor.position);
-            }
+            //GL.Color(Color.red);
+            //foreach(Boid neighbor in boid.neighbors)
+            //{
+            //    GL.Vertex(boid.position);
+            //    GL.Vertex(neighbor.position);
+            //}
 
             GL.End();
             GL.PopMatrix();

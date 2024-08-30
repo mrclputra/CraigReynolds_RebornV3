@@ -16,10 +16,16 @@ MonoBehaviour:
   spawnRadius: 24
   boidCount: 700
   maxVelocity: 3
-  boidViewRadius: 2
+  boidViewRadius: 4
   boidViewFOV: 360
   boundsWeight: 200
   wanderRadius: 10
   wanderJitter: 6
-  wanderWeight: 1
+  wanderWeight: 2
   wanderEnabled: 1
+  cohesionWeight: 3.2
+  cohesionEnabled: 1
+  alignmentWeight: 2.4
+  alignmentEnabled: 1
+  separationWeight: 2
+  separationEnabled: 1

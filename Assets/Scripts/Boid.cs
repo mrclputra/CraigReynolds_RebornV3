@@ -51,6 +51,12 @@ public class Boid : MonoBehaviour
 
         if (config.wanderEnabled)
             result += Wander() * config.wanderWeight;
+        if(config.cohesionEnabled)
+            result += Cohesion() * config.cohesionWeight;
+        if (config.alignmentEnabled)
+            result += Alignment() * config.alignmentWeight;
+        if (config.separationEnabled)
+            result += Separation() * config.separationWeight;
         result += AvoidBounds() * config.boundsWeight;
 
         acceleration = result.normalized;
@@ -61,12 +67,60 @@ public class Boid : MonoBehaviour
     vector calculation functions
     */
 
+    public Vector3 Cohesion()
+    {
+        // returns vector to average position of neighbors
+        Vector3 result = Vector3.zero;
 
+        if (neighbors == null)
+            return result;
+
+        foreach (Boid boid in neighbors)
+            result += boid.position;
+
+        result /= neighbors.Count;
+        result -= position;
+        return result.normalized;
+    }
+
+    public Vector3 Alignment()
+    {
+        // returns vector to average velocity of neighbors
+        Vector3 result = Vector3.zero;
+
+        if (neighbors == null)
+            return result; // move this to main combine?
+
+        foreach (Boid boid in neighbors)
+            result += boid.velocity;
+
+        result /= neighbors.Count;
+        return result.normalized;
+    }
+
+
+    public Vector3 Separation()
+    {
+        // returns vector away from all neighbors
+        Vector3 result = Vector3.zero;
+
+        if (neighbors == null) 
+            return result;
+
+        foreach (Boid boid in neighbors)
+        {
+            Vector3 target = this.position - boid.position;
+            if (target.magnitude > 0)
+                result += target / target.sqrMagnitude; // scale the force by distance
+        }
+
+        return result.normalized;
+    }
 
     public Vector3 Wander()
     {
         float x, y, z;
-        lock (random)
+        lock (random) // acquire thread lock on rng
         {
             x = (float)(random.Value.NextDouble() * 2.0 - 1.0);
             y = (float)(random.Value.NextDouble() * 2.0 - 1.0);

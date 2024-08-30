@@ -14,15 +14,25 @@ public class Config : ScriptableObject
     //public float maxAcceleration;
     public float boidViewRadius;
     public float boidViewFOV;
-
-    [Space(10)]
     public float boundsWeight;
 
-    [Space(10)]
+    [Space(5)]
     public float wanderRadius;
     public float wanderJitter;
     public float wanderWeight;
     public bool wanderEnabled; // wander toggle
+
+    [Space(5)]
+    public float cohesionWeight;
+    public bool cohesionEnabled;
+
+    [Space(5)]
+    public float alignmentWeight;
+    public bool alignmentEnabled;
+
+    [Space(5)]
+    public float separationWeight;
+    public bool separationEnabled;
 
     //[Space(10)]
     // add more here

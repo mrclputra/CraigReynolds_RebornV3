@@ -18,16 +18,16 @@ MonoBehaviour:
   maxDepth: 0
   boidCount: 800
   maxVelocity: 5
-  boidViewRadius: 3
-  boidViewFOV: 180
+  boidViewRadius: 2
+  boidViewFOV: 360
   boundsWeight: 100
   wanderRadius: 10
-  wanderJitter: 12
-  wanderWeight: 2
+  wanderJitter: 20
+  wanderWeight: 4
   wanderEnabled: 1
-  cohesionWeight: 3
+  cohesionWeight: 6
   cohesionEnabled: 1
-  alignmentWeight: 2
+  alignmentWeight: 6
   alignmentEnabled: 1
   separationWeight: 2
   separationEnabled: 1

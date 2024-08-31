@@ -84,7 +84,7 @@ public class BoidManager : MonoBehaviour
             // draw velocities
             GL.Color(new Color(0, 0, 0, 0.5f));
             GL.Vertex(boid.transform.position);
-            GL.Vertex(boid.transform.position + (boid.velocity / 3f));
+            GL.Vertex(boid.transform.position + (boid.velocity / 5f));
 
             //draw neighbor connections
             //GL.Color(Color.red);

@@ -20,7 +20,7 @@ public class Boid : MonoBehaviour
     private void Start()
     {
         // on object instantiate
-        velocity = Vector3.zero;
+        velocity = Random.onUnitSphere * config.maxVelocity; // start with some random velocity
         acceleration = Vector3.zero;
         position = transform.position;
 
@@ -60,7 +60,7 @@ public class Boid : MonoBehaviour
         result += AvoidBounds() * config.boundsWeight;
 
         acceleration = result.normalized;
-        //acceleration = Vector3.ClampMagnitude(result.normalized, config.maxAcceleration);
+        //acceleration = Vector3.ClampMagnitude(result.normalized, config.maxAcceleration); // if u want to limit acceleration (dont)
     }
 
     /*
@@ -97,8 +97,6 @@ public class Boid : MonoBehaviour
         result /= neighbors.Count;
         return result.normalized;
     }
-
-
     public Vector3 Separation()
     {
         // returns vector away from all neighbors
@@ -135,6 +133,7 @@ public class Boid : MonoBehaviour
 
     public Vector3 AvoidBounds()
     {
+        // cube implementation
         float edgeDistance = config.boundarySize * 0.3f;
 
         float xForce = position.x < -edgeDistance ? 1 : position.x > edgeDistance ? -1 : 0;
@@ -152,4 +151,24 @@ public class Boid : MonoBehaviour
 
         return new Vector3(xForce * forceMultiplier, yForce * forceMultiplier, zForce * forceMultiplier);
     }
+
+    //private Vector3 AvoidBounds()
+    //{
+    //    Vector3 avoidanceVector = Vector3.zero;
+
+    //    float edgeDistance = config.boundarySize;
+    //    float edgeStrength = 12f;
+
+    //    // distance from world center
+    //    Vector3 directionToCenter = Vector3.zero - position;
+    //    float distanceFromCenter = (directionToCenter).magnitude;
+
+    //    if (distanceFromCenter > edgeDistance / 2f)
+    //    {
+    //        float forceMagnitude = edgeStrength * Mathf.Pow((distanceFromCenter - edgeDistance), 2);
+    //        avoidanceVector = directionToCenter.normalized * forceMagnitude;
+    //    }
+
+    //    return avoidanceVector;
+    //}
 }

@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Toggle alignmentToggle;
     [SerializeField] private Toggle separationToggle;
 
+    [SerializeField] private Toggle visualizeTreeToggle;
     [SerializeField] private Toggle visualizeBoundsToggle;
     [SerializeField] private Toggle visualizeFOVToggle;
 

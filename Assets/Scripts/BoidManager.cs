@@ -31,7 +31,8 @@ public class BoidManager : MonoBehaviour
         // rebuild kdtree
         kdTree.Build(boids);
 
-        // parallel operations
+        // parallel operations here
+        // make sure that no Unity API calls are made inside and during parallelization
         Parallel.ForEach(boids, boid =>
         {
             // update neighbor list
@@ -123,11 +124,12 @@ public class BoidManager : MonoBehaviour
 
     private void OnRenderObject()
     {
-        // ensure all boid positions are updated
+        // ensure all boid positions are updated before drawings
         if(!shouldDraw) return;
 
         foreach(Boid boid in boids)
         {
+            // begin GL API calls
             GL.PushMatrix();
             GL.Begin(GL.LINES);
             lineMaterial.SetPass(0);
@@ -137,7 +139,7 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(boid.transform.position);
             GL.Vertex(boid.transform.position + (boid.velocity / 5f));
 
-            //draw neighbor connections
+            //draw boid neighbor connections
             if (drawFOV)
             {
                 GL.Color(new Color(1, 0, 0, 0.2f));
@@ -147,6 +149,9 @@ public class BoidManager : MonoBehaviour
                     GL.Vertex(neighbor.position);
                 }
             }
+
+            // draw kd-tree planes
+
 
             GL.End();
             GL.PopMatrix();

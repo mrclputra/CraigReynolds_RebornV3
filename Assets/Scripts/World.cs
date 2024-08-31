@@ -7,6 +7,14 @@ public class World : MonoBehaviour
 
     public bool drawBounds = false;
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     private void OnRenderObject()
     {
         if (!drawBounds) return; // could be optimized

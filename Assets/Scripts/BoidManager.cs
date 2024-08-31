@@ -12,20 +12,14 @@ public class BoidManager : MonoBehaviour
     private KDTree kdTree;
 
     private bool shouldDraw = false; // draw lines flag
+    public bool drawFOV = false;
 
     private void Awake()
     {
         // spawn in boids
         for(int i = 0; i < config.boidCount; i++)
         {
-            GameObject obj = Instantiate(
-                boidPrefab,
-                Random.insideUnitSphere * (config.spawnRadius / 2f),
-                Quaternion.identity
-            );
-
-            obj.gameObject.SetActive( true );
-            boids.Add(obj.GetComponent<Boid>());
+            Spawn(boidPrefab);
         }
 
         kdTree = new KDTree();
@@ -48,6 +42,48 @@ public class BoidManager : MonoBehaviour
         });
 
         shouldDraw = true;
+    }
+
+    public void UpdateBoidCount(float value)
+    {
+        int targetCount = Mathf.RoundToInt(value);
+
+        if(targetCount > boids.Count)
+        {
+            // increase number of boids
+            int toSpawn = targetCount - boids.Count;
+            for (int i = 0; i < toSpawn; i++)
+            {
+                Spawn(boidPrefab);
+            }
+        }
+        else if(targetCount < boids.Count)
+        {
+            // reduce number of boids
+            int toDelete = boids.Count - targetCount;
+            for (int i = 0; i < toDelete; i++)
+            {
+                DeleteBoid(boids[boids.Count - 1]); // remove last boid in list
+            }
+        }
+    }
+
+    private void Spawn(GameObject boidPrefab)
+    {
+        GameObject obj = Instantiate(
+                boidPrefab,
+                Random.insideUnitSphere * (config.spawnRadius / 2f),
+                Quaternion.identity
+            );
+
+        obj.gameObject.SetActive(true);
+        boids.Add(obj.GetComponent<Boid>());
+    }
+
+    private void DeleteBoid(Boid boid)
+    {
+        if(boids.Remove(boid))
+            Destroy(boid.gameObject);
     }
 
     //private List<Boid> GetNeighbors(Boid self)
@@ -102,12 +138,14 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(boid.transform.position + (boid.velocity / 5f));
 
             //draw neighbor connections
-            //GL.Color(Color.red);
-            GL.Color(new Color(1, 0, 0, 0.2f));
-            foreach (Boid neighbor in boid.neighbors)
+            if (drawFOV)
             {
-                GL.Vertex(boid.position);
-                GL.Vertex(neighbor.position);
+                GL.Color(new Color(1, 0, 0, 0.2f));
+                foreach (Boid neighbor in boid.neighbors)
+                {
+                    GL.Vertex(boid.position);
+                    GL.Vertex(neighbor.position);
+                }
             }
 
             GL.End();

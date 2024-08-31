@@ -5,8 +5,12 @@ public class World : MonoBehaviour
     [SerializeField] Config config;
     [SerializeField] Material lineMaterial;
 
+    public bool drawBounds = false;
+
     private void OnRenderObject()
     {
+        if (!drawBounds) return; // could be optimized
+
         // do boundary rendering here  
         float halfSize = config.boundarySize / 2;
         lineMaterial.SetPass(0);

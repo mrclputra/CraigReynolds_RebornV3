@@ -131,44 +131,44 @@ public class Boid : MonoBehaviour
         return wanderTarget.normalized;
     }
 
-    public Vector3 AvoidBounds()
-    {
-        // cube implementation
-        float edgeDistance = config.boundarySize * 0.3f;
-
-        float xForce = position.x < -edgeDistance ? 1 : position.x > edgeDistance ? -1 : 0;
-        float yForce = position.y < -edgeDistance ? 1 : position.y > edgeDistance ? -1 : 0;
-        float zForce = position.z < -edgeDistance ? 1 : position.z > edgeDistance ? -1 : 0;
-
-        float proximity = Mathf.Min(
-            Mathf.Abs(edgeDistance - Mathf.Abs(position.x)),
-            Mathf.Abs(edgeDistance - Mathf.Abs(position.y)),
-            Mathf.Abs(edgeDistance - Mathf.Abs(position.z))
-        );
-
-        float proximityMultiplier = Mathf.Clamp01(1.0f - proximity / edgeDistance);
-        float forceMultiplier = proximityMultiplier * 100f;
-
-        return new Vector3(xForce * forceMultiplier, yForce * forceMultiplier, zForce * forceMultiplier);
-    }
-
-    //private Vector3 AvoidBounds()
+    //public Vector3 AvoidBounds()
     //{
-    //    Vector3 avoidanceVector = Vector3.zero;
+    //    // cube implementation
+    //    float edgeDistance = config.boundarySize * 0.3f;
 
-    //    float edgeDistance = config.boundarySize;
-    //    float edgeStrength = 12f;
+    //    float xForce = position.x < -edgeDistance ? 1 : position.x > edgeDistance ? -1 : 0;
+    //    float yForce = position.y < -edgeDistance ? 1 : position.y > edgeDistance ? -1 : 0;
+    //    float zForce = position.z < -edgeDistance ? 1 : position.z > edgeDistance ? -1 : 0;
 
-    //    // distance from world center
-    //    Vector3 directionToCenter = Vector3.zero - position;
-    //    float distanceFromCenter = (directionToCenter).magnitude;
+    //    float proximity = Mathf.Min(
+    //        Mathf.Abs(edgeDistance - Mathf.Abs(position.x)),
+    //        Mathf.Abs(edgeDistance - Mathf.Abs(position.y)),
+    //        Mathf.Abs(edgeDistance - Mathf.Abs(position.z))
+    //    );
 
-    //    if (distanceFromCenter > edgeDistance / 2f)
-    //    {
-    //        float forceMagnitude = edgeStrength * Mathf.Pow((distanceFromCenter - edgeDistance), 2);
-    //        avoidanceVector = directionToCenter.normalized * forceMagnitude;
-    //    }
+    //    float proximityMultiplier = Mathf.Clamp01(1.0f - proximity / edgeDistance);
+    //    float forceMultiplier = proximityMultiplier * 100f;
 
-    //    return avoidanceVector;
+    //    return new Vector3(xForce * forceMultiplier, yForce * forceMultiplier, zForce * forceMultiplier);
     //}
+
+    private Vector3 AvoidBounds()
+    {
+        // spherical implementation
+        Vector3 avoidanceVector = Vector3.zero;
+        float boundaryRadius = config.boundarySize * 0.6f; // adjust bound size multiplier here
+        float edgeDistance = 5f;
+        float edgeStrength = 12f;
+
+        Vector3 directionToCenter = -position;
+        float distanceFromCenter = directionToCenter.magnitude;
+
+        if (distanceFromCenter > boundaryRadius - edgeDistance)
+        {
+            float forceMagnitude = edgeStrength * Mathf.Pow(edgeDistance - (boundaryRadius - distanceFromCenter), 2);
+            avoidanceVector = directionToCenter.normalized * forceMagnitude;
+        }
+
+        return avoidanceVector;
+    }
 }

@@ -7,12 +7,12 @@ public class Config : ScriptableObject
     public float boundarySize;
     public float spawnRadius;
 
-    [Header("Octree")]
-    public int maxBoids;
-    public int maxDepth;
+    //[Header("Octree")]
+    //public int maxBoids;
+    //public int maxDepth;
 
     [Header("Boids")]
-    public float boidCount;
+    public int boidCount;
     //[Space(5)]
     public float maxVelocity;
     //public float maxAcceleration;

@@ -82,17 +82,18 @@ public class BoidManager : MonoBehaviour
             lineMaterial.SetPass(0);
 
             // draw velocities
-            GL.Color(Color.gray);
+            GL.Color(new Color(0, 0, 0, 0.5f));
             GL.Vertex(boid.transform.position);
-            GL.Vertex(boid.transform.position + (boid.velocity / 2));
+            GL.Vertex(boid.transform.position + (boid.velocity / 3f));
 
-            // draw neighbor connections
+            //draw neighbor connections
             //GL.Color(Color.red);
-            //foreach(Boid neighbor in boid.neighbors)
-            //{
-            //    GL.Vertex(boid.position);
-            //    GL.Vertex(neighbor.position);
-            //}
+            GL.Color(new Color(1, 0, 0, 0.2f));
+            foreach (Boid neighbor in boid.neighbors)
+            {
+                GL.Vertex(boid.position);
+                GL.Vertex(neighbor.position);
+            }
 
             GL.End();
             GL.PopMatrix();

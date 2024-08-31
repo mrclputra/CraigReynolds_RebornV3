@@ -7,6 +7,10 @@ public class Config : ScriptableObject
     public float boundarySize;
     public float spawnRadius;
 
+    [Header("Octree")]
+    public int maxBoids;
+    public int maxDepth;
+
     [Header("Boids")]
     public float boidCount;
     //[Space(5)]
@@ -16,7 +20,7 @@ public class Config : ScriptableObject
     public float boidViewFOV;
     public float boundsWeight;
 
-    [Space(5)]
+    [Space(10)]
     public float wanderRadius;
     public float wanderJitter;
     public float wanderWeight;

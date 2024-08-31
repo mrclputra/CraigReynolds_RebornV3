@@ -27,14 +27,14 @@ public class Boid : MonoBehaviour
         wanderTarget = Vector3.zero;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         // update velocity based on acceleration
-        velocity += acceleration * Time.fixedDeltaTime;
+        velocity += acceleration * Time.deltaTime * 3f; // adjust time modifier here
         velocity = Vector3.ClampMagnitude(velocity, config.maxVelocity);
 
         // update position based on velocity
-        position += velocity * Time.fixedDeltaTime;
+        position += velocity * Time.deltaTime;
         transform.position = position;
 
         // update rotation to face velocity

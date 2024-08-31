@@ -9,6 +9,8 @@ public class BoidManager : MonoBehaviour
     [SerializeField] private Material lineMaterial;
 
     private List<Boid> boids = new List<Boid>();
+    private KDTree kdTree;
+
     private bool shouldDraw = false; // draw lines flag
 
     private void Awake()
@@ -25,10 +27,16 @@ public class BoidManager : MonoBehaviour
             obj.gameObject.SetActive( true );
             boids.Add(obj.GetComponent<Boid>());
         }
+
+        kdTree = new KDTree();
+        kdTree.Build(boids);
     }
 
     private void FixedUpdate()
     {
+        // rebuild kdtree
+        kdTree.Build(boids);
+
         // parallel operations
         Parallel.ForEach(boids, boid =>
         {
@@ -42,32 +50,39 @@ public class BoidManager : MonoBehaviour
         shouldDraw = true;
     }
 
+    //private List<Boid> GetNeighbors(Boid self)
+    //{
+    //    // returns a list of boids of input boid based on config.viewradius
+    //    // this implementation utilizes the boids array
+
+    //    List<Boid> neighbors = new List<Boid> ();
+
+    //    foreach(Boid boid in boids)
+    //    {
+    //        if(boid == self) continue; // skip self
+
+    //        Vector3 offset = boid.position - self.position;
+    //        float sqrDistance = offset.sqrMagnitude;
+
+    //        // check if in view range
+    //        if(sqrDistance <= config.boidViewRadius * config.boidViewRadius)
+    //        {
+    //            float angle = Vector3.Angle(boid.velocity, offset.normalized);
+
+    //            // check if in field of view
+    //            if(angle <= config.boidViewFOV / 2)
+    //                neighbors.Add(boid);
+    //        }
+    //    }
+
+    //    return neighbors;
+    //}
+
     private List<Boid> GetNeighbors(Boid self)
     {
-        // returns a list of boids of input boid based on config.viewradius
-        // this implementation utilizes the boids array
-
-        List<Boid> neighbors = new List<Boid> ();
-
-        foreach(Boid boid in boids)
-        {
-            if(boid == self) continue; // skip self
-
-            Vector3 offset = boid.position - self.position;
-            float sqrDistance = offset.sqrMagnitude;
-
-            // check if in view range
-            if(sqrDistance <= config.boidViewRadius * config.boidViewRadius)
-            {
-                float angle = Vector3.Angle(boid.velocity, offset.normalized);
-
-                // check if in field of view
-                if(angle <= config.boidViewFOV / 2)
-                    neighbors.Add(boid);
-            }
-        }
-
-        return neighbors;
+        float radius = config.boidViewRadius;
+        float fov = config.boidViewFOV;
+        return kdTree.Query(self.position, radius, fov);
     }
 
     private void OnRenderObject()

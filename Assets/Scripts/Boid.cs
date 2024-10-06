@@ -15,7 +15,6 @@ public class Boid : MonoBehaviour
 
     // https://www.c-sharpcorner.com/UploadFile/pranayamr/random-number-in-multithreading/
     private static readonly ThreadLocal<System.Random> random = new ThreadLocal<System.Random>(() => new System.Random());
-    // what the fuck lmao
 
     private void Start()
     {

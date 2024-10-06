@@ -31,6 +31,8 @@ public class BoidManager : MonoBehaviour
         // rebuild kdtree
         kdTree.Build(boids);
 
+        // hello world
+
         // parallel operations here
         // make sure that no Unity API calls are made inside and during parallelization
         Parallel.ForEach(boids, boid =>

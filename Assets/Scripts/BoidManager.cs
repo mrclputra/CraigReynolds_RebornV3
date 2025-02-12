@@ -12,6 +12,8 @@ public class BoidManager : MonoBehaviour
     private KDTree kdTree;
 
     private bool shouldDraw = false; // draw lines flag
+
+    public bool drawVisualizer = false; // draw kdtree flag
     public bool drawFOV = false;
 
     private void Awake()
@@ -124,13 +126,11 @@ public class BoidManager : MonoBehaviour
                 }
             }
 
-            // draw kd-tree planes
-
-
             GL.End();
             GL.PopMatrix();
         }
 
+        if (!drawVisualizer) return;
         DrawKDTreePlanes(kdTree.root, 0);
     }
 
@@ -142,7 +142,7 @@ public class BoidManager : MonoBehaviour
         int axis = depth % 3;
 
         Vector3 planePosition = node.boid.position;
-        float planeSize = 20f;
+        float planeSize = 22f;
 
         DrawPlane(planePosition, axis, planeSize);
 
@@ -176,9 +176,6 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(topRight);
             GL.Vertex(bottomRight);
             GL.Vertex(bottomLeft);
-
-            Vector3 center = new Vector3(0, 0, position.z);
-            DrawLine(position, center);
         }
         else if (axis == 1) // y-axis split
         {
@@ -191,9 +188,6 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(topRight);
             GL.Vertex(bottomRight);
             GL.Vertex(bottomLeft);
-
-            Vector3 center = new Vector3(0, 0, position.z);
-            DrawLine(position, center);
         }
         else // z-axis split
         {
@@ -206,21 +200,9 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(topRight);
             GL.Vertex(bottomRight);
             GL.Vertex(bottomLeft);
-
-            Vector3 center = new Vector3(0, 0, position.z);
-            DrawLine(position, center);
         }
 
         GL.End();
         GL.PopMatrix();
-    }
-
-    private void DrawLine(Vector3 start, Vector3 end)
-    {
-        GL.Begin(GL.LINES);
-        GL.Color(new Color(1, 1, 0, 1)); // Yellow for the line color
-        GL.Vertex(start);
-        GL.Vertex(end);
-        GL.End();
     }
 }

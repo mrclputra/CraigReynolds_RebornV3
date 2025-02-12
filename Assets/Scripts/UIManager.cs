@@ -28,19 +28,22 @@ public class UIManager : MonoBehaviour
         lastBoidCount = config.boidCount;
 
         // disable on start
-        cohesionToggle.isOn = config.cohesionEnabled; 
+        cohesionToggle.isOn = config.cohesionEnabled;
         alignmentToggle.isOn = config.alignmentEnabled;
         separationToggle.isOn = config.separationEnabled;
 
         visualizeBoundsToggle.isOn = world.drawBounds;
         visualizeFOVToggle.isOn = boidManager.drawFOV;
+        visualizeTreeToggle.isOn = boidManager.drawVisualizer;
 
-        boidCountSlider.onValueChanged.AddListener((v) => {
+        boidCountSlider.onValueChanged.AddListener((v) =>
+        {
             lastBoidCount = Mathf.RoundToInt(v);
             boidManager.UpdateBoidCount(v);
         });
 
-        resetButton.onClick.AddListener(() => {
+        resetButton.onClick.AddListener(() =>
+        {
             // reset boid positions
             boidManager.UpdateBoidCount(0);
             boidManager.UpdateBoidCount(lastBoidCount);
@@ -52,11 +55,13 @@ public class UIManager : MonoBehaviour
 
         visualizeBoundsToggle.onValueChanged.AddListener(updateBoundsDraw);
         visualizeFOVToggle.onValueChanged.AddListener(updateFOVDraw);
+        visualizeTreeToggle.onValueChanged.AddListener(updateVisualizerDraw);
     }
 
     private void updateCohesion(bool value) { config.cohesionEnabled = value; }
     private void updateAlignment(bool value) { config.alignmentEnabled = value; }
-    private void updateSeparation(bool value) {  config.separationEnabled = value;}
+    private void updateSeparation(bool value) { config.separationEnabled = value; }
+    private void updateVisualizerDraw(bool value) { boidManager.drawVisualizer = value; }
     private void updateBoundsDraw(bool value) { world.drawBounds = value; }
     private void updateFOVDraw(bool value) { boidManager.drawFOV = value; }
 }

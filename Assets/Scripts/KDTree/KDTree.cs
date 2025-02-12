@@ -14,7 +14,7 @@ public class KDTree
     {
         // recursive
 
-        if(boids.Count == 0) return null;
+        if (boids.Count == 0) return null;
 
         int axis = depth % 3; // 0 = x-axis, 1 = y-axis, 2 = z-axis
 
@@ -67,10 +67,10 @@ public class KDTree
 
         // determine which axis to use for the current depth of the KD-tree
         // then compute distance distance from the query position to the splitting plane of the current node
-        int axis = depth % 3;   
+        int axis = depth % 3;
         float diff = axis == 0 ? position.x - node.boid.position.x :
-                          axis == 1 ? position.y - node.boid.position.y :
-                                      position.z - node.boid.position.z;
+            axis == 1 ? position.y - node.boid.position.y :
+                position.z - node.boid.position.z;
 
         // choose near and far nodes based on relative position to splitting plane
         KDTreeNode nearNode = diff < 0 ? node.left : node.right;

@@ -17,7 +17,7 @@ public class BoidManager : MonoBehaviour
     private void Awake()
     {
         // spawn in boids
-        for(int i = 0; i < config.boidCount; i++)
+        for (int i = 0; i < config.boidCount; i++)
         {
             Spawn(boidPrefab);
         }
@@ -51,7 +51,7 @@ public class BoidManager : MonoBehaviour
     {
         int targetCount = Mathf.RoundToInt(value);
 
-        if(targetCount > boids.Count)
+        if (targetCount > boids.Count)
         {
             // increase number of boids
             int toSpawn = targetCount - boids.Count;
@@ -60,7 +60,7 @@ public class BoidManager : MonoBehaviour
                 Spawn(boidPrefab);
             }
         }
-        else if(targetCount < boids.Count)
+        else if (targetCount < boids.Count)
         {
             // reduce number of boids
             int toDelete = boids.Count - targetCount;
@@ -85,37 +85,9 @@ public class BoidManager : MonoBehaviour
 
     private void DeleteBoid(Boid boid)
     {
-        if(boids.Remove(boid))
+        if (boids.Remove(boid))
             Destroy(boid.gameObject);
     }
-
-    //private List<Boid> GetNeighbors(Boid self)
-    //{
-    //    // returns a list of boids of input boid based on config.viewradius
-    //    // this implementation utilizes the boids array
-
-    //    List<Boid> neighbors = new List<Boid> ();
-
-    //    foreach(Boid boid in boids)
-    //    {
-    //        if(boid == self) continue; // skip self
-
-    //        Vector3 offset = boid.position - self.position;
-    //        float sqrDistance = offset.sqrMagnitude;
-
-    //        // check if in view range
-    //        if(sqrDistance <= config.boidViewRadius * config.boidViewRadius)
-    //        {
-    //            float angle = Vector3.Angle(boid.velocity, offset.normalized);
-
-    //            // check if in field of view
-    //            if(angle <= config.boidViewFOV / 2)
-    //                neighbors.Add(boid);
-    //        }
-    //    }
-
-    //    return neighbors;
-    //}
 
     private List<Boid> GetNeighbors(Boid self)
     {
@@ -127,9 +99,9 @@ public class BoidManager : MonoBehaviour
     private void OnRenderObject()
     {
         // ensure all boid positions are updated before drawings
-        if(!shouldDraw) return;
+        if (!shouldDraw) return;
 
-        foreach(Boid boid in boids)
+        foreach (Boid boid in boids)
         {
             // begin GL API calls
             GL.PushMatrix();

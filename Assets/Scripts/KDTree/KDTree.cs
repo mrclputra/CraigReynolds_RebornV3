@@ -7,24 +7,48 @@ public class KDTree
 
     public void Build(List<Boid> boids)
     {
-        root = BuildTree(boids, 0);
+        // TODO: link to spawnradius or world bounds through config
+        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 10f * 2);
+        root = BuildTree(boids, 0, initialBounds);
     }
 
-    private KDTreeNode BuildTree(List<Boid> boids, int depth)
+    private KDTreeNode BuildTree(List<Boid> boids, int depth, Bounds pBounds)
     {
         // recursive
-
         if (boids.Count == 0) return null;
 
         int axis = depth % 3; // 0 = x-axis, 1 = y-axis, 2 = z-axis
-
         boids.Sort((a, b) => CompareByAxis(a, b, axis));
 
         int medianIndex = boids.Count / 2;
-        KDTreeNode node = new KDTreeNode(boids[medianIndex]);
+        Boid medianBoid = boids[medianIndex];
 
-        node.left = BuildTree(boids.GetRange(0, medianIndex), depth + 1);
-        node.right = BuildTree(boids.GetRange(medianIndex + 1, boids.Count - medianIndex - 1), depth + 1);
+        // split parent bounds along current axis
+        Bounds leftBounds = new Bounds(pBounds.center, pBounds.size);
+        Bounds rightBounds = new Bounds(pBounds.center, pBounds.size);
+
+        if (axis == 0) // x-axis
+        {
+            leftBounds.max = new Vector3(medianBoid.position.x, pBounds.max.y, pBounds.max.z);
+            rightBounds.min = new Vector3(medianBoid.position.x, pBounds.min.y, pBounds.min.z);
+        }
+        else if (axis == 1) // y-axis
+        {
+            leftBounds.max = new Vector3(pBounds.max.x, medianBoid.position.y, pBounds.max.z);
+            rightBounds.min = new Vector3(pBounds.min.x, medianBoid.position.y, pBounds.min.z);
+        }
+        else // z-axis
+        {
+            leftBounds.max = new Vector3(pBounds.max.x, pBounds.max.y, medianBoid.position.z);
+            rightBounds.min = new Vector3(pBounds.min.x, pBounds.min.y, medianBoid.position.z);
+        }
+
+        // create the current node with median boid and its bounds
+        KDTreeNode node = new KDTreeNode(medianBoid, pBounds);
+
+        // build left and right subtrees
+        node.left = BuildTree(boids.GetRange(0, medianIndex), depth + 1, leftBounds);
+        node.right = BuildTree(boids.GetRange(medianIndex + 1, boids.Count - medianIndex - 1), depth + 1, rightBounds);
 
         return node;
     }
@@ -53,6 +77,11 @@ public class KDTree
         // base case if current node is null
         if (node == null) return;
 
+        // check if the node's bounds intersect with the search radius
+        // skip this node if its bounds are outside the search radius
+        if (!node.bounds.Intersects(new Bounds(position, Vector3.one * radius * 2)))
+            return;
+
         // check if boid at this node is within search radius
         if (Vector3.Distance(node.boid.position, position) <= radius)
         {
@@ -66,7 +95,7 @@ public class KDTree
         }
 
         // determine which axis to use for the current depth of the KD-tree
-        // then compute distance distance from the query position to the splitting plane of the current node
+        // then compute distance from the query position to the splitting plane of the current node
         int axis = depth % 3;
         float diff = axis == 0 ? position.x - node.boid.position.x :
             axis == 1 ? position.y - node.boid.position.y :

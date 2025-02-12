@@ -8,7 +8,7 @@ public class KDTree
     public void Build(List<Boid> boids)
     {
         // TODO: link to spawnradius or world bounds through config
-        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 10f * 2);
+        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 12f * 2);
         root = BuildTree(boids, 0, initialBounds);
     }
 

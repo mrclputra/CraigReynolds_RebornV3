@@ -198,6 +198,51 @@ public class BoidManager : MonoBehaviour
         }
 
         GL.End();
+
+        // draw lines
+        GL.Begin(GL.LINES);
+        lineMaterial.SetPass(0);
+
+        GL.Color(new Color(0, 0, 0, 1));
+
+        if (axis == 0) // x-axis split
+        {
+            Vector3 topLeft = new Vector3(position.x, bounds.min.y, bounds.min.z);
+            Vector3 topRight = new Vector3(position.x, bounds.min.y, bounds.max.z);
+            Vector3 bottomLeft = new Vector3(position.x, bounds.max.y, bounds.min.z);
+            Vector3 bottomRight = new Vector3(position.x, bounds.max.y, bounds.max.z);
+
+            GL.Vertex(topLeft); GL.Vertex(topRight);
+            GL.Vertex(topRight); GL.Vertex(bottomRight);
+            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
+            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
+        }
+        else if (axis == 1) // y-axis split
+        {
+            Vector3 topLeft = new Vector3(bounds.min.x, position.y, bounds.min.z);
+            Vector3 topRight = new Vector3(bounds.max.x, position.y, bounds.min.z);
+            Vector3 bottomLeft = new Vector3(bounds.min.x, position.y, bounds.max.z);
+            Vector3 bottomRight = new Vector3(bounds.max.x, position.y, bounds.max.z);
+
+            GL.Vertex(topLeft); GL.Vertex(topRight);
+            GL.Vertex(topRight); GL.Vertex(bottomRight);
+            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
+            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
+        }
+        else // z-axis split
+        {
+            Vector3 topLeft = new Vector3(bounds.min.x, bounds.min.y, position.z);
+            Vector3 topRight = new Vector3(bounds.max.x, bounds.min.y, position.z);
+            Vector3 bottomLeft = new Vector3(bounds.min.x, bounds.max.y, position.z);
+            Vector3 bottomRight = new Vector3(bounds.max.x, bounds.max.y, position.z);
+
+            GL.Vertex(topLeft); GL.Vertex(topRight);
+            GL.Vertex(topRight); GL.Vertex(bottomRight);
+            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
+            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
+        }
+
+        GL.End();
         GL.PopMatrix();
     }
 }

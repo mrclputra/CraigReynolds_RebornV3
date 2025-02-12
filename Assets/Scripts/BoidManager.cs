@@ -130,5 +130,97 @@ public class BoidManager : MonoBehaviour
             GL.End();
             GL.PopMatrix();
         }
+
+        DrawKDTreePlanes(kdTree.root, 0);
+    }
+
+    private void DrawKDTreePlanes(KDTreeNode node, int depth)
+    {
+        if (node == null) return;
+
+        // get splitting axis for this node (0=x, 1=y, 2=z)
+        int axis = depth % 3;
+
+        Vector3 planePosition = node.boid.position;
+        float planeSize = 20f;
+
+        DrawPlane(planePosition, axis, planeSize);
+
+        // recursively draw planes for left and right children
+        DrawKDTreePlanes(node.left, depth + 1);
+        DrawKDTreePlanes(node.right, depth + 1);
+    }
+
+    private void DrawPlane(Vector3 position, int axis, float size)
+    {
+        // plane color
+        GL.PushMatrix();
+        GL.Begin(GL.QUADS);
+        lineMaterial.SetPass(0);
+        // GL.Color(new Color(0, 1, 0, 0.2f)); // TODO: to be changed
+
+        // set color based on axis
+        if (axis == 0) GL.Color(new Color(1, 0, 0, 0.1f));
+        else if (axis == 1) GL.Color(new Color(0, 1, 0, 0.1f));
+        else GL.Color(new Color(0, 0, 1, 0.1f));
+
+        // draw planes
+        if (axis == 0) // x-axis split
+        {
+            Vector3 topLeft = new Vector3(position.x, -size / 2, -size / 2);
+            Vector3 topRight = new Vector3(position.x, -size / 2, size / 2);
+            Vector3 bottomLeft = new Vector3(position.x, size / 2, -size / 2);
+            Vector3 bottomRight = new Vector3(position.x, size / 2, size / 2);
+
+            GL.Vertex(topLeft);
+            GL.Vertex(topRight);
+            GL.Vertex(bottomRight);
+            GL.Vertex(bottomLeft);
+
+            Vector3 center = new Vector3(0, 0, position.z);
+            DrawLine(position, center);
+        }
+        else if (axis == 1) // y-axis split
+        {
+            Vector3 topLeft = new Vector3(-size / 2, position.y, -size / 2);
+            Vector3 topRight = new Vector3(size / 2, position.y, -size / 2);
+            Vector3 bottomLeft = new Vector3(-size / 2, position.y, size / 2);
+            Vector3 bottomRight = new Vector3(size / 2, position.y, size / 2);
+
+            GL.Vertex(topLeft);
+            GL.Vertex(topRight);
+            GL.Vertex(bottomRight);
+            GL.Vertex(bottomLeft);
+
+            Vector3 center = new Vector3(0, 0, position.z);
+            DrawLine(position, center);
+        }
+        else // z-axis split
+        {
+            Vector3 topLeft = new Vector3(-size / 2, -size / 2, position.z);
+            Vector3 topRight = new Vector3(size / 2, -size / 2, position.z);
+            Vector3 bottomLeft = new Vector3(-size / 2, size / 2, position.z);
+            Vector3 bottomRight = new Vector3(size / 2, size / 2, position.z);
+
+            GL.Vertex(topLeft);
+            GL.Vertex(topRight);
+            GL.Vertex(bottomRight);
+            GL.Vertex(bottomLeft);
+
+            Vector3 center = new Vector3(0, 0, position.z);
+            DrawLine(position, center);
+        }
+
+        GL.End();
+        GL.PopMatrix();
+    }
+
+    private void DrawLine(Vector3 start, Vector3 end)
+    {
+        GL.Begin(GL.LINES);
+        GL.Color(new Color(1, 1, 0, 1)); // Yellow for the line color
+        GL.Vertex(start);
+        GL.Vertex(end);
+        GL.End();
     }
 }

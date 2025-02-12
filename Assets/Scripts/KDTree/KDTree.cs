@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KDTree
 {
-    private KDTreeNode root;
+    public KDTreeNode root;
 
     public void Build(List<Boid> boids)
     {

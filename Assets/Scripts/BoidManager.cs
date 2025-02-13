@@ -11,10 +11,12 @@ public class BoidManager : MonoBehaviour
     private List<Boid> boids = new List<Boid>();
     private KDTree kdTree;
 
-    private bool shouldDraw = false; // draw lines flag
+    // vector lines enabled flag, DONT TOUCH
+    // ensures opengl calls aren't drawn until boid positions are updated
+    private bool shouldDraw = false;
 
-    public bool drawVisualizer = false; // draw kdtree flag
-    public bool drawFOV = false;
+    public bool drawVisualizer = false; // draw kdtree visualizer flag
+    public bool drawFOV = false; // draw FOV lines flag
 
     private void Awake()
     {
@@ -100,7 +102,7 @@ public class BoidManager : MonoBehaviour
 
     private void OnRenderObject()
     {
-        // ensure all boid positions are updated before drawings
+        // ensure all boid positions are updated before drawing calls
         if (!shouldDraw) return;
 
         foreach (Boid boid in boids)
@@ -118,7 +120,7 @@ public class BoidManager : MonoBehaviour
             //draw boid neighbor connections
             if (drawFOV)
             {
-                GL.Color(new Color(1, 0, 0, 0.2f));
+                GL.Color(new Color(1, 0, 0, 0.4f));
                 foreach (Boid neighbor in boid.neighbors)
                 {
                     GL.Vertex(boid.position);
@@ -148,16 +150,14 @@ public class BoidManager : MonoBehaviour
 
     private void DrawPlane(Vector3 position, int axis, Bounds bounds)
     {
-        // plane color
         GL.PushMatrix();
         GL.Begin(GL.QUADS);
         lineMaterial.SetPass(0);
-        // GL.Color(new Color(0, 1, 0, 0.2f)); // TODO: to be changed
 
         // set color based on axis
-        if (axis == 0) GL.Color(new Color(1, 0, 0, 0.2f));
-        else if (axis == 1) GL.Color(new Color(0, 1, 0, 0.2f));
-        else GL.Color(new Color(0, 0, 1, 0.2f));
+        if (axis == 0) GL.Color(new Color(1, 0, 0, 0.14f));
+        else if (axis == 1) GL.Color(new Color(0, 1, 0, 0.14f));
+        else GL.Color(new Color(0, 0, 1, 0.14f));
 
         // draw planes
         if (axis == 0) // x-axis split
@@ -203,7 +203,7 @@ public class BoidManager : MonoBehaviour
         GL.Begin(GL.LINES);
         lineMaterial.SetPass(0);
 
-        GL.Color(new Color(0, 0, 0, 1));
+        GL.Color(new Color(0, 0, 0, 0.7f));
 
         if (axis == 0) // x-axis split
         {

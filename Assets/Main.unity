@@ -320,7 +320,10 @@ MonoBehaviour:
   cohesionToggle: {fileID: 663188623}
   alignmentToggle: {fileID: 110133787}
   separationToggle: {fileID: 806140506}
+  visualizeTreeToggle: {fileID: 713262244}
   visualizeBoundsToggle: {fileID: 347111922}
+  visualizeFOVToggle: {fileID: 1800070089}
+  boidCountSlider: {fileID: 2049561981}
   resetButton: {fileID: 1252749990}
   boidManager: {fileID: 1323812656}
   config: {fileID: 11400000, guid: fdef63c623fb350429fefa379ad03d84, type: 2}
@@ -2241,6 +2244,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: fdef63c623fb350429fefa379ad03d84, type: 2}
   boidPrefab: {fileID: 1439331852}
+  lineMaterial: {fileID: 2100000, guid: 670db9ed250b8234c9016ec470d230a8, type: 2}
+  drawVisualizer: 0
+  drawFOV: 0
 --- !u!1 &1335582871
 GameObject:
   m_ObjectHideFlags: 0

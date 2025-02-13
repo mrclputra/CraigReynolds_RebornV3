@@ -9,13 +9,11 @@ public class BoidManager : MonoBehaviour
     [SerializeField] private Material lineMaterial;
 
     private List<Boid> boids = new List<Boid>();
-    private KDTree kdTree;
 
     // vector lines enabled flag, DONT TOUCH
     // ensures opengl calls aren't drawn until boid positions are updated
     private bool shouldDraw = false;
 
-    public bool drawVisualizer = false; // draw kdtree visualizer flag
     public bool drawFOV = false; // draw FOV lines flag
 
     private void Awake()
@@ -25,18 +23,10 @@ public class BoidManager : MonoBehaviour
         {
             Spawn(boidPrefab);
         }
-
-        kdTree = new KDTree();
-        kdTree.Build(boids);
     }
 
     private void Update()
     {
-        // rebuild kdtree
-        kdTree.Build(boids);
-
-        // hello world
-
         // parallel operations here
         // make sure that no Unity API calls are made inside and during parallelization
         Parallel.ForEach(boids, boid =>
@@ -95,9 +85,32 @@ public class BoidManager : MonoBehaviour
 
     private List<Boid> GetNeighbors(Boid self)
     {
-        float radius = config.boidViewRadius;
-        float fov = config.boidViewFOV;
-        return kdTree.Query(self.position, radius, fov);
+        List<Boid> neighbors = new List<Boid>();
+        float radiusSq = config.boidViewRadius * config.boidViewRadius;
+        float cosFOV = Mathf.Cos(config.boidViewFOV * 0.5f * Mathf.Deg2Rad);
+
+        // calculate self's forward direction from velocity
+        Vector3 selfForward = self.velocity.normalized;
+
+        foreach (Boid other in boids)
+        {
+            if (other == self) continue;
+
+            Vector3 toOther = other.position - self.position;
+            float distSq = toOther.sqrMagnitude;
+
+            // check if within radius
+            if (distSq > radiusSq) continue;
+
+            // check if within FOV
+            Vector3 dirToOther = toOther.normalized;
+            float dot = Vector3.Dot(selfForward, dirToOther);
+            if (dot < cosFOV) continue;
+
+            neighbors.Add(other);
+        }
+
+        return neighbors;
     }
 
     private void OnRenderObject()
@@ -117,7 +130,7 @@ public class BoidManager : MonoBehaviour
             GL.Vertex(boid.transform.position);
             GL.Vertex(boid.transform.position + (boid.velocity / 5f));
 
-            //draw boid neighbor connections
+            // draw boid neighbor connections
             if (drawFOV)
             {
                 GL.Color(new Color(1, 0, 0, 0.4f));
@@ -131,78 +144,5 @@ public class BoidManager : MonoBehaviour
             GL.End();
             GL.PopMatrix();
         }
-
-        if (!drawVisualizer) return;
-        DrawKDTreePlanes(kdTree.root, 0);
-    }
-
-    private void DrawKDTreePlanes(KDTreeNode node, int depth)
-    {
-        if (node == null) return;
-
-        int axis = depth % 3;
-        DrawPlane(node.boid.position, axis, node.bounds);
-
-        // recursively draw planes for left and right children
-        DrawKDTreePlanes(node.left, depth + 1);
-        DrawKDTreePlanes(node.right, depth + 1);
-    }
-
-    private void DrawPlane(Vector3 position, int axis, Bounds bounds)
-    {
-        // define corner coordinates
-        Vector3 topLeft;
-        Vector3 topRight;
-        Vector3 bottomLeft;
-        Vector3 bottomRight;
-        Color color;
-
-        if (axis == 0) // x-axis split
-        {
-            topLeft = new Vector3(position.x, bounds.min.y, bounds.min.z);
-            topRight = new Vector3(position.x, bounds.min.y, bounds.max.z);
-            bottomLeft = new Vector3(position.x, bounds.max.y, bounds.min.z);
-            bottomRight = new Vector3(position.x, bounds.max.y, bounds.max.z);
-            color = new Color(1, 0, 0, 0.14f);
-        }
-        else if (axis == 1) // y-axis split
-        {
-            topLeft = new Vector3(bounds.min.x, position.y, bounds.min.z);
-            topRight = new Vector3(bounds.max.x, position.y, bounds.min.z);
-            bottomLeft = new Vector3(bounds.min.x, position.y, bounds.max.z);
-            bottomRight = new Vector3(bounds.max.x, position.y, bounds.max.z);
-            color = new Color(0, 1, 0, 0.14f);
-        }
-        else // z-axis split
-        {
-            topLeft = new Vector3(bounds.min.x, bounds.min.y, position.z);
-            topRight = new Vector3(bounds.max.x, bounds.min.y, position.z);
-            bottomLeft = new Vector3(bounds.min.x, bounds.max.y, position.z);
-            bottomRight = new Vector3(bounds.max.x, bounds.max.y, position.z);
-            color = new Color(0, 0, 1, 0.14f);
-        }
-
-        GL.PushMatrix();
-        lineMaterial.SetPass(0);
-
-        // draw planes
-        GL.Begin(GL.QUADS);
-        GL.Color(color);
-        GL.Vertex(topLeft);
-        GL.Vertex(topRight);
-        GL.Vertex(bottomRight);
-        GL.Vertex(bottomLeft);
-        GL.End();
-
-        // draw lines
-        GL.Begin(GL.LINES);
-        GL.Color(new Color(0, 0, 0, 0.7f));
-        GL.Vertex(topLeft); GL.Vertex(topRight);
-        GL.Vertex(topRight); GL.Vertex(bottomRight);
-        GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
-        GL.Vertex(bottomLeft); GL.Vertex(topLeft);
-        GL.End();
-
-        GL.PopMatrix();
     }
 }

@@ -150,99 +150,59 @@ public class BoidManager : MonoBehaviour
 
     private void DrawPlane(Vector3 position, int axis, Bounds bounds)
     {
-        GL.PushMatrix();
-        GL.Begin(GL.QUADS);
-        lineMaterial.SetPass(0);
+        // define corner coordinates
+        Vector3 topLeft;
+        Vector3 topRight;
+        Vector3 bottomLeft;
+        Vector3 bottomRight;
+        Color color;
 
-        // set color based on axis
-        if (axis == 0) GL.Color(new Color(1, 0, 0, 0.14f));
-        else if (axis == 1) GL.Color(new Color(0, 1, 0, 0.14f));
-        else GL.Color(new Color(0, 0, 1, 0.14f));
-
-        // draw planes
         if (axis == 0) // x-axis split
         {
-            Vector3 topLeft = new Vector3(position.x, bounds.min.y, bounds.min.z);
-            Vector3 topRight = new Vector3(position.x, bounds.min.y, bounds.max.z);
-            Vector3 bottomLeft = new Vector3(position.x, bounds.max.y, bounds.min.z);
-            Vector3 bottomRight = new Vector3(position.x, bounds.max.y, bounds.max.z);
-
-            GL.Vertex(topLeft);
-            GL.Vertex(topRight);
-            GL.Vertex(bottomRight);
-            GL.Vertex(bottomLeft);
+            topLeft = new Vector3(position.x, bounds.min.y, bounds.min.z);
+            topRight = new Vector3(position.x, bounds.min.y, bounds.max.z);
+            bottomLeft = new Vector3(position.x, bounds.max.y, bounds.min.z);
+            bottomRight = new Vector3(position.x, bounds.max.y, bounds.max.z);
+            color = new Color(1, 0, 0, 0.14f);
         }
         else if (axis == 1) // y-axis split
         {
-            Vector3 topLeft = new Vector3(bounds.min.x, position.y, bounds.min.z);
-            Vector3 topRight = new Vector3(bounds.max.x, position.y, bounds.min.z);
-            Vector3 bottomLeft = new Vector3(bounds.min.x, position.y, bounds.max.z);
-            Vector3 bottomRight = new Vector3(bounds.max.x, position.y, bounds.max.z);
-
-            GL.Vertex(topLeft);
-            GL.Vertex(topRight);
-            GL.Vertex(bottomRight);
-            GL.Vertex(bottomLeft);
+            topLeft = new Vector3(bounds.min.x, position.y, bounds.min.z);
+            topRight = new Vector3(bounds.max.x, position.y, bounds.min.z);
+            bottomLeft = new Vector3(bounds.min.x, position.y, bounds.max.z);
+            bottomRight = new Vector3(bounds.max.x, position.y, bounds.max.z);
+            color = new Color(0, 1, 0, 0.14f);
         }
         else // z-axis split
         {
-            Vector3 topLeft = new Vector3(bounds.min.x, bounds.min.y, position.z);
-            Vector3 topRight = new Vector3(bounds.max.x, bounds.min.y, position.z);
-            Vector3 bottomLeft = new Vector3(bounds.min.x, bounds.max.y, position.z);
-            Vector3 bottomRight = new Vector3(bounds.max.x, bounds.max.y, position.z);
-
-            GL.Vertex(topLeft);
-            GL.Vertex(topRight);
-            GL.Vertex(bottomRight);
-            GL.Vertex(bottomLeft);
+            topLeft = new Vector3(bounds.min.x, bounds.min.y, position.z);
+            topRight = new Vector3(bounds.max.x, bounds.min.y, position.z);
+            bottomLeft = new Vector3(bounds.min.x, bounds.max.y, position.z);
+            bottomRight = new Vector3(bounds.max.x, bounds.max.y, position.z);
+            color = new Color(0, 0, 1, 0.14f);
         }
 
+        GL.PushMatrix();
+        lineMaterial.SetPass(0);
+
+        // draw planes
+        GL.Begin(GL.QUADS);
+        GL.Color(color);
+        GL.Vertex(topLeft);
+        GL.Vertex(topRight);
+        GL.Vertex(bottomRight);
+        GL.Vertex(bottomLeft);
         GL.End();
 
         // draw lines
         GL.Begin(GL.LINES);
-        lineMaterial.SetPass(0);
-
         GL.Color(new Color(0, 0, 0, 0.7f));
-
-        if (axis == 0) // x-axis split
-        {
-            Vector3 topLeft = new Vector3(position.x, bounds.min.y, bounds.min.z);
-            Vector3 topRight = new Vector3(position.x, bounds.min.y, bounds.max.z);
-            Vector3 bottomLeft = new Vector3(position.x, bounds.max.y, bounds.min.z);
-            Vector3 bottomRight = new Vector3(position.x, bounds.max.y, bounds.max.z);
-
-            GL.Vertex(topLeft); GL.Vertex(topRight);
-            GL.Vertex(topRight); GL.Vertex(bottomRight);
-            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
-            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
-        }
-        else if (axis == 1) // y-axis split
-        {
-            Vector3 topLeft = new Vector3(bounds.min.x, position.y, bounds.min.z);
-            Vector3 topRight = new Vector3(bounds.max.x, position.y, bounds.min.z);
-            Vector3 bottomLeft = new Vector3(bounds.min.x, position.y, bounds.max.z);
-            Vector3 bottomRight = new Vector3(bounds.max.x, position.y, bounds.max.z);
-
-            GL.Vertex(topLeft); GL.Vertex(topRight);
-            GL.Vertex(topRight); GL.Vertex(bottomRight);
-            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
-            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
-        }
-        else // z-axis split
-        {
-            Vector3 topLeft = new Vector3(bounds.min.x, bounds.min.y, position.z);
-            Vector3 topRight = new Vector3(bounds.max.x, bounds.min.y, position.z);
-            Vector3 bottomLeft = new Vector3(bounds.min.x, bounds.max.y, position.z);
-            Vector3 bottomRight = new Vector3(bounds.max.x, bounds.max.y, position.z);
-
-            GL.Vertex(topLeft); GL.Vertex(topRight);
-            GL.Vertex(topRight); GL.Vertex(bottomRight);
-            GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
-            GL.Vertex(bottomLeft); GL.Vertex(topLeft);
-        }
-
+        GL.Vertex(topLeft); GL.Vertex(topRight);
+        GL.Vertex(topRight); GL.Vertex(bottomRight);
+        GL.Vertex(bottomRight); GL.Vertex(bottomLeft);
+        GL.Vertex(bottomLeft); GL.Vertex(topLeft);
         GL.End();
+
         GL.PopMatrix();
     }
 }

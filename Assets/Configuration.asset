@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f277657ab462bb9439bfcedd48c79b64, type: 3}
   m_Name: Configuration
   m_EditorClassIdentifier: 
-  boundarySize: 24
-  spawnRadius: 20
-  boidCount: 400
-  maxVelocity: 5
-  boidViewRadius: 3
-  boidViewFOV: 270
+  boundarySize: 30
+  spawnRadius: 24
+  boidCount: 2000
+  maxVelocity: 4
+  boidViewRadius: 4
+  boidViewFOV: 180
   boundsWeight: 100
   wanderRadius: 10
   wanderJitter: 20
@@ -25,7 +25,7 @@ MonoBehaviour:
   wanderEnabled: 1
   cohesionWeight: 6
   cohesionEnabled: 1
-  alignmentWeight: 4
+  alignmentWeight: 6
   alignmentEnabled: 1
-  separationWeight: 2
+  separationWeight: 8
   separationEnabled: 1

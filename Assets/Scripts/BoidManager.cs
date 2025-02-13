@@ -30,7 +30,7 @@ public class BoidManager : MonoBehaviour
         kdTree.Build(boids);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         // rebuild kdtree
         kdTree.Build(boids);

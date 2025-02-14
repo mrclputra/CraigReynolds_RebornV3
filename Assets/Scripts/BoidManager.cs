@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class BoidManager : MonoBehaviour
@@ -27,16 +26,15 @@ public class BoidManager : MonoBehaviour
 
     private void Update()
     {
-        // parallel operations here
-        // make sure that no Unity API calls are made inside and during parallelization
-        Parallel.ForEach(boids, boid =>
+        // single-threaded operations here
+        foreach (Boid boid in boids)
         {
             // update neighbor list
             boid.neighbors = GetNeighbors(boid);
 
             // compute acceleration values
             boid.Combine();
-        });
+        }
 
         shouldDraw = true;
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boundarySize: 60
   spawnRadius: 40
-  boidCount: 3000
+  boidCount: 1500
   maxVelocity: 4
   boidViewRadius: 4
   boidViewFOV: 180

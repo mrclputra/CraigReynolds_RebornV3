@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,8 @@ public class KDTree
 
     public void Build(List<Boid> boids)
     {
-        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 30f);
+        // set the multiplier to bounds size
+        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 60f);
         root = BuildTree(boids, 0, boids.Count, 0, initialBounds);
     }
 

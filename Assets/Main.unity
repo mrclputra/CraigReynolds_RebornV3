@@ -2816,9 +2816,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensitivity: 120
   zoomSpeed: 40
-  minZoom: 10
-  maxZoom: 50
-  currentZoom: 36
+  minZoom: 30
+  maxZoom: 100
+  currentZoom: 60
   rotationSmoothTime: 0.2
   zoomSmoothTime: 0.2
 --- !u!1 &1780089331

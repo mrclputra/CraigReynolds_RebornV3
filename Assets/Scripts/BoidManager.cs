@@ -26,7 +26,7 @@ public class BoidManager : MonoBehaviour
             Spawn(boidPrefab);
         }
 
-        kdTree = new KDTree();
+        kdTree = new KDTree(config);
         kdTree.Build(boids);
     }
 

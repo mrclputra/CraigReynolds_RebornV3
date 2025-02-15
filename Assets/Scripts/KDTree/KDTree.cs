@@ -4,11 +4,18 @@ using UnityEngine;
 public class KDTree
 {
     public KDTreeNode root;
+    private Config config;
+
+    // constructor
+    public KDTree(Config config)
+    {
+        this.config = config;
+    }
 
     public void Build(List<Boid> boids)
     {
         // set the multiplier to bounds size
-        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * 60f);
+        Bounds initialBounds = new Bounds(Vector3.zero, Vector3.one * config.boundarySize);
         root = BuildTree(boids, 0, boids.Count, 0, initialBounds);
     }
 

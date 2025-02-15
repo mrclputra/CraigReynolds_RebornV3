@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 764701fab3ca17c4992935b580455a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 0}
+  config: {fileID: 11400000, guid: fdef63c623fb350429fefa379ad03d84, type: 2}
   neighbors: []
   position: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}

@@ -21,6 +21,10 @@ public class Camera : MonoBehaviour
     private float rotationSmoothVelocityY;
     private float zoomSmoothVelocity;
 
+    [SerializeField] private KeyCode rotationKey = KeyCode.R;
+    [SerializeField] private float rotationSpeed = 10f;
+    private bool isAutoRotating = false; // Toggle state
+
     private void Awake()
     {
         currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
@@ -34,11 +38,21 @@ public class Camera : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButton(1))
+        if (Input.GetKeyDown(rotationKey))
+        {
+            isAutoRotating = !isAutoRotating;
+        }
+
+        if (Input.GetMouseButton(1))
         {
             targetRX += Input.GetAxis("Mouse X") * sensitivity * 0.01f;
             targetRY -= Input.GetAxis("Mouse Y") * sensitivity * 0.01f;
             targetRY = Mathf.Clamp(targetRY, -88f, 88f); // set up and down limits
+        }
+
+        if (isAutoRotating)
+        {
+            targetRX += rotationSpeed * Time.deltaTime; // Rotate automatically
         }
 
         // zoom function

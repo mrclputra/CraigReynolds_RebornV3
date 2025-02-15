@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f277657ab462bb9439bfcedd48c79b64, type: 3}
   m_Name: Configuration
   m_EditorClassIdentifier: 
-  boundarySize: 40
-  spawnRadius: 40
-  boidCount: 500
+  boundarySize: 50
+  spawnRadius: 50
+  boidCount: 1500
   maxVelocity: 4
   boidViewRadius: 4
   boidViewFOV: 180
